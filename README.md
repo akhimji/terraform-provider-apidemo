@@ -1,5 +1,6 @@
 # terraform-provider-apidemo
-Building a simple custome provider to gain a better understanding of the CRUD Terraform spec
+Building a simple custom provider to gain a better understanding of the CRUD Terraform spec
+Provider is built against a Go based Restful API server (https://github.com/alyarctiq/go-restapi-server)
 
 Build
 ```
@@ -14,7 +15,8 @@ mv tf
 
 Testing
 ```
-This provider is built against a simple Go based Restful API server (https://github.com/alyarctiq/go-restapi-server)
+This provider is built against a simple Go based Restful API server 
+(https://github.com/alyarctiq/go-restapi-server)
 Build and Run the above web-app. Listed on localhost:12345
 
 $ curl http://localhost:12345/people/1
