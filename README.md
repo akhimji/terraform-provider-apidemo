@@ -17,7 +17,7 @@ Testing
 ```
 This provider is built against a simple Go based Restful API server 
 (https://github.com/alyarctiq/go-restapi-server)
-Build and Run the above web-app. Listed on localhost:12345
+Build and Run the above web-app. Listens on localhost:12345
 
 $ curl http://localhost:12345/people/1
 {"id":"1","firstname":"Ernest","lastname":"Hemingway","address":{"city":"Dublin","state":"CA"}}
