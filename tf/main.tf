@@ -1,5 +1,5 @@
 provider "apidemo" {
-  address = "http://localhost/"
+  address = "http://localhost"
   port    = "12345"
   key     = "/people/"
 }
