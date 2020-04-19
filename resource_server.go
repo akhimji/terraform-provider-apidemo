@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/alyarctiq/terraform-provider-apidemo/client"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
 
@@ -16,11 +17,6 @@ func resourceServer() *schema.Resource {
 		Delete: resourceServerDelete,
 
 		Schema: map[string]*schema.Schema{
-			// "address": &schema.Schema{
-			// 	Type:     schema.TypeString,
-			// 	Required: false,
-			// },
-
 			"apiid": &schema.Schema{
 				Type:     schema.TypeString,
 				Required: true,
@@ -38,7 +34,12 @@ func resourceServer() *schema.Resource {
 		},
 	}
 }
+
 func resourceServerCreate(d *schema.ResourceData, m interface{}) error {
+	apiClient := m.(*client.Client)
+	baseurl := apiClient.hostname + ":" + apiClient.port + apiClient.key
+	url := baseurl + d.Get("apiid").(string)
+
 	type Payload struct {
 		ID        string `json:"ID"`
 		Firstname string `json:"Firstname"`
@@ -55,8 +56,7 @@ func resourceServerCreate(d *schema.ResourceData, m interface{}) error {
 		// handle err
 	}
 	body := bytes.NewReader(payloadBytes)
-	baseurl := "http://localhost:12345/people/"
-	url := baseurl + d.Get("apiid").(string)
+
 	req, err := http.NewRequest("POST", url, body)
 	if err != nil {
 		// handle err
@@ -74,6 +74,9 @@ func resourceServerCreate(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourceServerRead(d *schema.ResourceData, m interface{}) error {
+	apiClient := m.(*client.Client)
+	baseurl := apiClient.hostname + ":" + apiClient.port + apiClient.key
+	url := baseurl + d.Get("apiid").(string)
 
 	type Payload struct {
 		ID        string `json:"id"`
@@ -81,9 +84,6 @@ func resourceServerRead(d *schema.ResourceData, m interface{}) error {
 		Lastname  string `json:"lastname"`
 	}
 	data := new(Payload)
-
-	baseurl := "http://localhost:12345/people/"
-	url := baseurl + d.Get("apiid").(string)
 
 	resp, err := http.Get(url)
 	if err != nil {
@@ -103,6 +103,10 @@ func resourceServerUpdate(d *schema.ResourceData, m interface{}) error {
 	// Enable partial state mode
 	d.Partial(true)
 
+	apiClient := m.(*client.Client)
+	baseurl := apiClient.hostname + ":" + apiClient.port + apiClient.key
+	url := baseurl + d.Get("apiid").(string)
+
 	type Payload struct {
 		ID        string `json:"id"`
 		Firstname string `json:"firstname"`
@@ -119,8 +123,7 @@ func resourceServerUpdate(d *schema.ResourceData, m interface{}) error {
 		// handle err
 	}
 	body := bytes.NewReader(payloadBytes)
-	baseurl := "http://localhost:12345/people/"
-	url := baseurl + d.Get("apiid").(string)
+
 	req, err := http.NewRequest("PUT", url, body)
 	if err != nil {
 		// handle err
@@ -138,8 +141,10 @@ func resourceServerUpdate(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourceServerDelete(d *schema.ResourceData, m interface{}) error {
-	baseurl := "http://localhost:12345/people/"
+	apiClient := m.(*client.Client)
+	baseurl := apiClient.hostname + ":" + apiClient.port + apiClient.key
 	url := baseurl + d.Get("apiid").(string)
+
 	req, err := http.NewRequest("DELETE", url, nil)
 	if err != nil {
 		// handle err
