@@ -7,6 +7,7 @@ provider "apidemo" {
 
 resource "apidemo_entry" "entry" {
   apiid        = "3"
-  firstname    = "Charles"
-  lastname     = "Dickens"
+  firstname    = "Michael"
+  lastname     = "Crichton"
+  occupation   = "Author"
 }

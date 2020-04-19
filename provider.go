@@ -36,5 +36,5 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 	hostname := d.Get("address").(string)
 	port := d.Get("port").(string)
 	key := d.Get("key").(string)
-	return client.NewClient(hostname, port, key), nil
+	return client.CreateClient(hostname, port, key), nil
 }

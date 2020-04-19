@@ -31,24 +31,30 @@ func resourceServer() *schema.Resource {
 				Type:     schema.TypeString,
 				Required: true,
 			},
+			"occupation": &schema.Schema{
+				Type:     schema.TypeString,
+				Required: true,
+			},
 		},
 	}
 }
 
 func resourceServerCreate(d *schema.ResourceData, m interface{}) error {
-	apiClient := m.(*client.Client)
-	baseurl := apiClient.hostname + ":" + apiClient.port + apiClient.key
+	apiClient := m.(*client.APIClient)
+	baseurl := apiClient.GetConnString()
 	url := baseurl + d.Get("apiid").(string)
 
 	type Payload struct {
-		ID        string `json:"ID"`
-		Firstname string `json:"Firstname"`
-		Lastname  string `json:"lastname"`
+		ID         string `json:"ID"`
+		Firstname  string `json:"Firstname"`
+		Lastname   string `json:"lastname"`
+		Occupation string `json:"occupation"`
 	}
 	data := Payload{
-		ID:        d.Get("apiid").(string),
-		Firstname: d.Get("firstname").(string),
-		Lastname:  d.Get("lastname").(string),
+		ID:         d.Get("apiid").(string),
+		Firstname:  d.Get("firstname").(string),
+		Lastname:   d.Get("lastname").(string),
+		Occupation: d.Get("occupation").(string),
 	}
 
 	payloadBytes, err := json.Marshal(data)
@@ -74,14 +80,15 @@ func resourceServerCreate(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourceServerRead(d *schema.ResourceData, m interface{}) error {
-	apiClient := m.(*client.Client)
-	baseurl := apiClient.hostname + ":" + apiClient.port + apiClient.key
+	apiClient := m.(*client.APIClient)
+	baseurl := apiClient.GetConnString()
 	url := baseurl + d.Get("apiid").(string)
 
 	type Payload struct {
-		ID        string `json:"id"`
-		Firstname string `json:"firstname"`
-		Lastname  string `json:"lastname"`
+		ID         string `json:"ID"`
+		Firstname  string `json:"Firstname"`
+		Lastname   string `json:"lastname"`
+		Occupation string `json:"occupation"`
 	}
 	data := new(Payload)
 
@@ -96,28 +103,30 @@ func resourceServerRead(d *schema.ResourceData, m interface{}) error {
 	d.Set("apiid", data.ID)
 	d.Set("firstname", data.Firstname)
 	d.Set("lastname", data.Lastname)
+	d.Set("occupation", data.Occupation)
 	return nil
 }
 
 func resourceServerUpdate(d *schema.ResourceData, m interface{}) error {
 	// Enable partial state mode
 	d.Partial(true)
-
-	apiClient := m.(*client.Client)
-	baseurl := apiClient.hostname + ":" + apiClient.port + apiClient.key
+	apiClient := m.(*client.APIClient)
+	baseurl := apiClient.GetConnString()
 	url := baseurl + d.Get("apiid").(string)
 
 	type Payload struct {
-		ID        string `json:"id"`
-		Firstname string `json:"firstname"`
-		Lastname  string `json:"lastname"`
+		ID         string `json:"ID"`
+		Firstname  string `json:"Firstname"`
+		Lastname   string `json:"lastname"`
+		Occupation string `json:"occupation"`
+	}
+	data := Payload{
+		ID:         d.Get("apiid").(string),
+		Firstname:  d.Get("firstname").(string),
+		Lastname:   d.Get("lastname").(string),
+		Occupation: d.Get("occupation").(string),
 	}
 
-	data := Payload{
-		ID:        d.Get("apiid").(string),
-		Firstname: d.Get("firstname").(string),
-		Lastname:  d.Get("lastname").(string),
-	}
 	payloadBytes, err := json.Marshal(data)
 	if err != nil {
 		// handle err
@@ -141,8 +150,8 @@ func resourceServerUpdate(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourceServerDelete(d *schema.ResourceData, m interface{}) error {
-	apiClient := m.(*client.Client)
-	baseurl := apiClient.hostname + ":" + apiClient.port + apiClient.key
+	apiClient := m.(*client.APIClient)
+	baseurl := apiClient.GetConnString()
 	url := baseurl + d.Get("apiid").(string)
 
 	req, err := http.NewRequest("DELETE", url, nil)
