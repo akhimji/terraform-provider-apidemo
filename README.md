@@ -15,8 +15,9 @@ mv tf
 
 Testing
 ```
-This provider is built against a simple Go based Restful API server 
+This provider is built against a Go based Restful API server (specficially selected for this use case)
 (https://github.com/alyarctiq/go-restapi-server)
+
 Build and Run the above web-app. Listens on localhost:12345
 
 $ curl http://localhost:12345/people/1
